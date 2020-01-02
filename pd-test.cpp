@@ -1,3 +1,7 @@
+#if defined(NDEBUG)
+#error This file depends on assert. Please compile without the NDEBUG macro defined
+#endif
+
 extern "C" {
 #include "pd512.h"
 }
@@ -83,4 +87,5 @@ static void test_pd_find_64() {
 int main() {
   test_select();
   test_pd_find_64();
+  cout << "All tests pass\n";
 }
