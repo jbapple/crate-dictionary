@@ -84,8 +84,33 @@ static void test_pd_find_64() {
   assert(true == pd_find_64(0, static_cast<char>(0xAB), &x));
 }
 
+static void test_pd_find_50() {
+  __m512i x = {(INT64_C(1) << 50) - 1, 0, 0, 0, 0, 0, 0, 0};
+  assert(false == pd_find_50(0, 0, &x));
+  assert(false == pd_find_50(1, 0, &x));
+  assert(false == pd_find_50(0, 1, &x));
+  x[0] = x[0] - 1;
+  x[1] = 1;
+  assert(true == pd_find_50(0, 0, &x));
+  assert(false == pd_find_50(1, 0, &x));
+  assert(false == pd_find_50(0, 1, &x));
+  x[0] = x[0] - 1;
+  assert(false == pd_find_50(0, 0, &x));
+  assert(true == pd_find_50(1, 0, &x));
+  assert(false == pd_find_50(0, 1, &x));
+  x[0] = x[0] + 1;
+  constexpr int kFirstSlot = ((50 + 51 + CHAR_BIT - 1) / CHAR_BIT) * CHAR_BIT - 64;
+  x[1] = 1 | (INT64_C(1) << kFirstSlot);
+  assert(false == pd_find_50(0, 0, &x));
+  assert(false == pd_find_50(1, 0, &x));
+  assert(true == pd_find_50(0, 1, &x));
+  x[1] = static_cast<int64_t>(1 | (UINT64_C(0xAB) << kFirstSlot));
+  assert(true == pd_find_50(0, static_cast<char>(0xAB), &x));
+}
+
 int main() {
   test_select();
   test_pd_find_64();
+  test_pd_find_50();
   cout << "All tests pass\n";
 }
