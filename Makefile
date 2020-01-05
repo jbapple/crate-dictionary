@@ -22,7 +22,7 @@ clean:
 	$(CXX) $< -o $@ ${LDFLAGS}
 
 %-assert.o: %.cpp ${HEADERS} Makefile
-	$(CXX) -c $(CFLAGS) -O0 $< -o $@
+	$(CXX) -c $(CFLAGS) -O0 -fsanitize=undefined $< -o $@
 
 %-assert.exe: %-assert.o %.cpp Makefile
-	$(CXX) $< -o $@ ${LDFLAGS}
+	$(CXX) -fsanitize=undefined $< -o $@ ${LDFLAGS}
