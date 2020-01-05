@@ -51,7 +51,6 @@ inline bool pd_find(int64_t quot, char rem, const __m512i* pd) {
 }
 #endif
 
-
 static void test_select() {
   assert(select64(0, 0) == 64);
   assert(select64(1, 1) == 64);
@@ -111,9 +110,39 @@ static void test_pd_find_50() {
   assert(true == pd_find_50(0, static_cast<char>(0xAB), &x));
 }
 
+static void test_pd_insert_50() {
+  __m512i x = {(INT64_C(1) << 50) - 1, 0, 0, 0, 0, 0, 0, 0};
+  for(int i = 0; i < 51; ++i) {
+    assert(false == pd_find_50(i % 50, i, &x));
+    assert(pd_add_50(i % 50, i, &x));
+    for (int j = 0; j <= i; ++j) {
+      assert(true == pd_find_50(j % 50, j, &x));
+    }
+    assert(false == pd_find_50(i % 50, i - 1, &x));
+    assert(false == pd_find_50(i % 50, i + 1, &x));
+  }
+  for(int i = 0; i < 51; ++i) {
+    assert(false == pd_add_50(i % 50, i, &x));
+  }
+  srand(0);
+  for(int k = 0; k < 50000; ++k) {
+    x = {(INT64_C(1) << 50) - 1, 0, 0, 0, 0, 0, 0, 0};
+    for (int i = 0; i < 51; ++i) {
+      uint64_t quot = rand() % 50;
+      uint64_t rem = rand() % 256;
+      assert(pd_add_50(quot, rem, &x));
+      assert(true == pd_find_50(quot, rem, &x));
+    }
+    for (int i = 0; i < 51; ++i) {
+      assert(false == pd_add_50(i % 50, i, &x));
+    }
+  }
+}
+
 int main() {
   test_select();
   test_pd_find_64();
   test_pd_find_50();
+  test_pd_insert_50();
   cout << "All tests pass\n";
 }
