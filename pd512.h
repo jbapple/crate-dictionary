@@ -7,6 +7,7 @@
 
 // returns the position (starting from 0) of the jth set bit of x.
 inline uint64_t select64(uint64_t x, int64_t j) {
+  assert(j < 64);
   const uint64_t y = _pdep_u64(UINT64_C(1) << j, x);
   return _tzcnt_u64(y);
 }
