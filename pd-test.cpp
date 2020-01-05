@@ -53,7 +53,10 @@ inline bool pd_find(int64_t quot, char rem, const __m512i* pd) {
 
 
 static void test_select() {
-  assert(select64(0,0) == 64);
+  assert(select64(0, 0) == 64);
+  assert(select64(1, 1) == 64);
+  assert(select64(~UINT64_C(0), 63) == 63);
+  assert(select64(~UINT64_C(0), 63) == 63);
   assert(select64(1, 0) == 0);
   assert(select64(1 << 10, 0) == 10);
   assert(select64(UINT64_C(1) << 63, 0) == 63);
