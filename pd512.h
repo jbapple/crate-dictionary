@@ -70,10 +70,10 @@ inline bool pd_find_50(int64_t quot, char rem, const __m512i* pd) {
   uint64_t begin = 0;
   if (quot > 0) {
     begin = ((quot <= p) ? nth64(header[0], quot - 1)
-                         : ((50 - p) + nth64(header[1], quot - 1 - p)));
+                         : ((64 - p) + nth64(header[1], quot - 1 - p)));
   }
   const uint64_t end =
-      (quot < p) ? nth64(header[0], quot) : ((50 - p) + nth64(header[1], quot - p));
+      (quot < p) ? nth64(header[0], quot) : ((64 - p) + nth64(header[1], quot - p));
   assert(begin <= end);
   assert(end <= 51);
   const __m512i target = _mm512_set1_epi8(rem);
